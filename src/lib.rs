@@ -22,13 +22,16 @@ pub struct NotebookMetadata<'a> {
     pub kernel_spec: KernelSpecification<'a>,
 
     #[serde(borrow)]
-    pub authors: Vec<Author<'a>>,
+    #[serde(skip_deserializing)]
+    pub language_info: Option<LanguageInfo<'a>>,
+
+    pub authors: Vec<Author>,
 }
 
 #[derive(Deserialize, Serialize)]
 pub struct KernelSpecification<'a> {
     #[serde(borrow)]
-    pub argv: Vec<&'a str>,
+    pub argv: Option<Vec<&'a str>>,
 
     #[serde(borrow)]
     pub display_name: &'a str,
@@ -50,9 +53,15 @@ pub enum InterruptMode {
 }
 
 #[derive(Deserialize, Serialize)]
-pub struct Author<'a> {
-    #[serde(borrow)]
+pub struct LanguageInfo<'a> {
+    pub file_extension: &'a str,
+    pub mimetype: &'a str,
     pub name: &'a str,
+}
+
+#[derive(Deserialize, Serialize)]
+pub struct Author {
+    pub name: String,
 }
 
 #[derive(Deserialize, Serialize)]
